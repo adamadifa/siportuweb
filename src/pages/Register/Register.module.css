@@ -1,0 +1,21 @@
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.loginLink {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.loginLink a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.loginLink a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,13 @@
+.layoutContainer {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    /* Slate 50 or matching app background */
+    padding-bottom: 80px;
+    /* Space for BottomNavigation + extra buffer */
+    position: relative;
+}
+
+.content {
+    /* Ensure content takes full width */
+    width: 100%;
+}

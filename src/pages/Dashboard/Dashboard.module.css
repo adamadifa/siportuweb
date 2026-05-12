@@ -1,0 +1,540 @@
+.container {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+    padding-bottom: 80px;
+    overflow-x: hidden;
+}
+
+/* Header & Top Section */
+.topSection {
+    background: linear-gradient(135deg, #042f2e 0%, #064e3b 100%);
+    padding: 40px 24px 100px 24px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.bgOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.bgImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+    filter: brightness(0.7) contrast(1.2);
+}
+
+.bgGradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(4, 47, 46, 0.9), rgba(6, 78, 59, 0.7));
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.brandWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.brandName {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, #fff, #ccfbf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logoutBtn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logoutBtn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.logoutBtn:active {
+    transform: scale(0.9);
+}
+
+.welcomeText {
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.greeting {
+    font-size: 15px;
+    opacity: 0.85;
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+
+.userName {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* Profile Slider Section (Floating) */
+.profileSection {
+    margin-top: -70px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.profileCard {
+    background: white;
+    border-radius: 20px;
+    padding: 18px 20px;
+    box-shadow: 
+        0 15px 20px -5px rgba(0, 0, 0, 0.05), 
+        0 8px 8px -5px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(241, 245, 249, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.profileCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 25px 30px -5px rgba(0, 0, 0, 0.08), 
+        0 15px 15px -5px rgba(0, 0, 0, 0.03);
+}
+
+.studentBasicInfo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.avatarWrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background-color: #f1f5f9;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #fff;
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarPlaceholder {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0d9488;
+}
+
+.studentTextInfo {
+    flex: 1;
+}
+
+.studentName {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+.studentMeta {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    background: #f0fdfa;
+    color: #0d9488;
+    border: 1px solid #ccfbf1;
+}
+
+.quickStats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #f8fafc;
+    padding: 10px 12px;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.statItem:hover {
+    background: #f1f5f9;
+}
+
+.statLabel {
+    font-size: 11px;
+    color: #64748b;
+    letter-spacing: normal;
+    font-weight: 600;
+}
+
+.statValue {
+    font-size: 15px;
+    font-weight: 700;
+    color: #334155;
+}
+
+/* Menu Grid */
+.sectionTitle {
+    padding: 30px 24px 18px 24px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: -0.2px;
+}
+
+.menuGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 12px;
+    padding: 0 20px;
+}
+
+.menuItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.iconBox {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    background: white;
+    box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menuItem:hover .iconBox {
+    box-shadow: 0 20px 25px -5px rgba(13, 148, 136, 0.15);
+    transform: translateY(-5px) scale(1.05);
+    border-color: #ccfbf1;
+}
+
+.menuItem:active .iconBox {
+    transform: scale(0.95);
+}
+
+.menuLabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    text-align: center;
+}
+
+/* News Slider */
+.newsSlider {
+    padding: 0 0 10px 0;
+    overflow: hidden;
+}
+
+.newsScroll {
+    display: flex;
+    gap: 16px;
+    padding: 0 20px 10px 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 20px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.newsScroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.newsSlideCard {
+    min-width: 280px;
+    max-width: 280px;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    scroll-snap-align: start;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s;
+}
+
+.newsSlideCard:active {
+    transform: scale(0.98);
+}
+
+.newsSlideImage {
+    height: 140px;
+    background: linear-gradient(135deg, #064e3b 0%, #042f2e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.newsSlideImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.newsSlideBadge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+}
+
+.newsSlideContent {
+    padding: 16px;
+}
+
+.newsSlideTitle {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 40px;
+}
+
+.newsSlideFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+/* News Section */
+.newsList {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.newsCard {
+    background: white;
+    border-radius: 24px;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.newsCard:hover {
+    transform: translateX(4px);
+    border-color: #ccfbf1;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.newsDate {
+    width: 56px;
+    height: 56px;
+    background: #f0fdfa;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #0d9488;
+    border: 1px solid #ccfbf1;
+    flex-shrink: 0;
+}
+
+.dateDay {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.dateMonth {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.newsContent {
+    flex: 1;
+}
+
+.newsTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.newsSnippet {
+    font-size: 13px;
+    color: #64748b;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+/* Dots for Slider */
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.dot:hover {
+    background: #cbd5e1;
+}
+
+.activeDot {
+    background: #0d9488;
+    width: 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
+}
+
+/* Coming Soon Badge */
+.csBadge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profileSection, .menuGrid, .newsList {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.menuGrid {
+    animation-delay: 0.1s;
+}
+
+.newsList {
+    animation-delay: 0.2s;
+}

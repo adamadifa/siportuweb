@@ -1,0 +1,626 @@
+.container {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+    padding-bottom: 40px;
+    overflow-x: hidden;
+}
+
+/* Unified Header */
+.headerWrapper {
+    position: relative;
+    background: linear-gradient(135deg, #042f2e 0%, #064e3b 100%);
+    overflow: hidden;
+    padding-bottom: 24px;
+    margin-bottom: -20px;
+}
+
+.bgOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.bgImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+    filter: brightness(0.7);
+}
+
+.bgGradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(4, 47, 46, 0.5), rgba(4, 47, 46, 0.9));
+}
+
+.topBar {
+    padding: 24px 20px 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    z-index: 10;
+}
+
+.backButton {
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.backButton:active {
+    transform: scale(0.9);
+}
+
+.pageTitle {
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    margin: 0;
+}
+
+.headerContent {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.avatarWrapper {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 20px;
+    padding: 3px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 17px;
+}
+
+.avatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    color: #0d9488;
+    background: #f0fdfa;
+    border-radius: 17px;
+}
+
+.studentInfo {
+    flex: 1;
+}
+
+.studentName {
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+
+.studentMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.badge {
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+}
+
+.locationInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.separator {
+    opacity: 0.3;
+}
+
+/* Tabs */
+.tabContainer {
+    position: relative;
+    z-index: 2;
+    margin: 0 20px 20px;
+    background: white;
+    padding: 6px;
+    border-radius: 16px;
+    display: flex;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+}
+
+.tabButton {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.activeTab {
+    background: #0d9488;
+    color: white;
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
+}
+
+.inactiveTab {
+    background: transparent;
+    color: #64748b;
+}
+
+/* Filter */
+.filterSection {
+    padding: 0 20px 20px;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+/* Bill Cards */
+.billList, .paymentList {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.billCard {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.billCard:active {
+    transform: scale(0.98);
+}
+
+.billHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.billCode {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.billTypeTag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.typePendaftaran { background: #f0fdf4; color: #166534; }
+.typeInfaq { background: #eff6ff; color: #1e40af; }
+
+.billAmount {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+.billDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detailLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.detailIcon {
+    font-size: 18px;
+}
+
+.potongan { color: #e11d48; }
+.mutasi { color: #d97706; }
+.bayar { color: #0d9488; }
+
+.detailValue {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.sisaRow {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.valSisa {
+    color: #0d9488;
+    font-size: 15px;
+}
+
+/* Payment History */
+.paymentCard {
+    background: white;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.paymentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.paymentIdGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.paymentDate {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.paymentRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.paymentLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.paymentValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.officerName {
+    color: #0d9488;
+}
+
+/* Summary Card */
+.summaryCard {
+    margin: 24px 20px;
+    background: #0f172a;
+    padding: 24px;
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 16px 0;
+}
+
+.totalTagihan {
+    opacity: 1;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sisaBayar {
+    opacity: 1;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.sisaBayar span:last-child {
+    color: #2dd4bf;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.billCard, .paymentCard, .summaryCard {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Modal Styling */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modalContent {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 24px;
+    overflow: hidden;
+    animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modalHeader {
+    padding: 20px 24px;
+    background: #f8fafc;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalHeader h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.closeButton {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.modalBody {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.sppItem {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+}
+
+.sppItemHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.sppMonth {
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.sppDate {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.sppDetailRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.paid { color: #0d9488; }
+.unpaid { color: #e11d48; }
+
+.modalFooter {
+    padding: 20px 24px;
+    background: #0f172a;
+    color: white;
+}
+
+.footerRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+/* Receipt Styles */
+.receiptModal {
+    max-width: 400px;
+}
+
+.receiptHeader {
+    padding: 30px 20px;
+    text-align: center;
+    background: #f8fafc;
+}
+
+.receiptLogo {
+    height: 60px;
+}
+
+.receiptDivider {
+    border-top: 2px dashed #e2e8f0;
+    margin: 0 24px;
+}
+
+.receiptBody {
+    padding: 24px;
+}
+
+.receiptRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.receiptLabel {
+    color: #64748b;
+}
+
+.receiptValue {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.receiptTotal {
+    font-size: 18px;
+    color: #0d9488;
+}
+
+.receiptSectionTitle {
+    padding: 0 24px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.receiptBreakdown {
+    padding: 0 24px 24px;
+}
+
+.receiptFooter {
+    padding: 24px;
+    text-align: center;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.qrPlaceholder {
+    background: white;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.scanText {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.closeReceiptButton {
+    background: white;
+    border: 1px solid #e2e8f0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
