@@ -17,13 +17,12 @@ import { toast } from 'react-hot-toast';
 import styles from './Akun.module.css';
 import { AuthRepository, GeneralRepository } from '../../repositories';
 import logo from '../../assets/images/logo.png';
-import Skeleton from '../../components/ui/Skeleton/Skeleton';
+
 
 const Akun = () => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [settings, setSettings] = useState(null);
-    const [loading, setLoading] = useState(true);
     
     // Change Password States
     const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -41,8 +40,6 @@ const Akun = () => {
                 if (res?.status === 'success') setSettings(res.data);
             } catch (error) {
                 console.error('Fetch settings error:', error);
-            } finally {
-                setLoading(false);
             }
         };
         const checkPush = async () => {
@@ -127,7 +124,7 @@ const Akun = () => {
         {
             title: 'Pengaturan Akun',
             items: [
-                { id: 'profile', label: 'Edit Profil', icon: <HiOutlineUser />, path: '/profile' },
+                { id: 'profile', label: 'Edit Profil', icon: <HiOutlineUser />, path: '/profile', comingSoon: true },
                 { id: 'notification', label: 'Notifikasi Push', icon: <HiOutlineBell />, action: handleToggleNotification, toggle: true, active: isSubscribed },
                 { id: 'password', label: 'Ubah Password', icon: <HiOutlineShieldCheck />, action: () => setShowPasswordModal(true) },
             ]
@@ -135,8 +132,8 @@ const Akun = () => {
         {
             title: 'Dukungan',
             items: [
-                { id: 'help', label: 'Pusat Bantuan', icon: <HiOutlineQuestionMarkCircle />, path: '/help' },
-                { id: 'about', label: 'Tentang Aplikasi', icon: <HiOutlineInformationCircle />, path: '/about' },
+                { id: 'help', label: 'Pusat Bantuan', icon: <HiOutlineQuestionMarkCircle />, path: '/help', comingSoon: true },
+                { id: 'about', label: 'Tentang Aplikasi', icon: <HiOutlineInformationCircle />, path: '/about', comingSoon: true },
             ]
         }
     ];
@@ -198,23 +195,32 @@ const Akun = () => {
                     <div key={idx} className={styles.menuGroup}>
                         <h3 className={styles.groupTitle}>{group.title}</h3>
                         <div className={styles.menuList}>
-                            {group.items.map((item) => (
-                                <div key={item.id} className={styles.menuItem} onClick={item.action || (() => navigate(item.path))}>
-                                    <div className={styles.menuItemLeft}>
-                                        <div className={styles.menuIconWrapper}>
-                                            {item.icon}
+                            {group.items.map((item) => {
+                                const isDisabled = item.comingSoon;
+                                return (
+                                    <div 
+                                        key={item.id} 
+                                        className={`${styles.menuItem} ${isDisabled ? styles.menuItemDisabled : ''}`} 
+                                        onClick={isDisabled ? undefined : (item.action || (() => navigate(item.path)))}
+                                    >
+                                        <div className={styles.menuItemLeft}>
+                                            <div className={styles.menuIconWrapper}>
+                                                {item.icon}
+                                            </div>
+                                            <span className={styles.menuLabel}>{item.label}</span>
                                         </div>
-                                        <span className={styles.menuLabel}>{item.label}</span>
+                                        {item.toggle ? (
+                                            <div className={`${styles.toggle} ${item.active ? styles.toggleActive : ''}`}>
+                                                <div className={styles.toggleCircle}></div>
+                                            </div>
+                                        ) : isDisabled ? (
+                                            <span className={styles.comingSoonBadge}>Soon</span>
+                                        ) : (
+                                            <HiOutlineChevronRight className={styles.chevron} />
+                                        )}
                                     </div>
-                                    {item.toggle ? (
-                                        <div className={`${styles.toggle} ${item.active ? styles.toggleActive : ''}`}>
-                                            <div className={styles.toggleCircle}></div>
-                                        </div>
-                                    ) : (
-                                        <HiOutlineChevronRight className={styles.chevron} />
-                                    )}
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 ))}

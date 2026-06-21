@@ -2,6 +2,7 @@
     min-height: 100vh;
     background-color: #f8fafc;
     padding-bottom: 120px;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Top Section & Header */
@@ -11,6 +12,7 @@
     background: linear-gradient(135deg, #042f2e 0%, #064e3b 100%);
     padding: 20px;
     color: white;
+    box-sizing: border-box;
 }
 
 .bgOverlay {
@@ -28,6 +30,7 @@
     height: 100%;
     object-fit: cover;
     opacity: 0.15;
+    filter: brightness(0.7) contrast(1.15);
 }
 
 .bgGradient {
@@ -43,6 +46,27 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    margin-top: 10px;
+}
+
+.backButton {
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.backButton:active {
+    transform: scale(0.9);
 }
 
 .brandWrapper {
@@ -54,11 +78,16 @@
 .logo {
     width: 28px;
     height: 28px;
+    object-fit: contain;
 }
 
 .brandName {
     font-size: 16px;
     font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, #fff, #ccfbf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .pageTitleWrapper {
@@ -68,39 +97,160 @@
 
 .pageTitle {
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .pageSubtitle {
     font-size: 13px;
     opacity: 0.8;
+    margin-top: 4px;
 }
 
-/* Content */
+/* Content Area */
 .content {
     padding: 24px 20px;
-    margin-top: -30px;
+    margin-top: 12px;
     position: relative;
     z-index: 2;
-    height: calc(100vh - 250px);
-    overflow: hidden;
+    height: calc(100vh - 280px);
+    display: flex;
+    flex-direction: column;
 }
 
+/* Controls: Filters scroll & Toggle view mode */
+.controlsRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.filterScroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+    padding-bottom: 4px;
+}
+
+.filterScroll::-webkit-scrollbar {
+    display: none;
+}
+
+.filterTab {
+    white-space: nowrap;
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+}
+
+.filterTab:hover {
+    color: #0d9488;
+    border-color: #ccfbf1;
+    background: #f0fdfa;
+}
+
+.activeTab {
+    background: #0d9488;
+    color: white;
+    border-color: #0d9488;
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
+}
+
+.activeTab:hover {
+    background: #0f766e;
+    color: white;
+}
+
+/* View Mode Toggles */
+.toggleWrapper {
+    display: flex;
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 3px;
+    gap: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.toggleBtn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggleBtn:hover {
+    color: #0d9488;
+    background: #f0fdfa;
+}
+
+.activeToggle {
+    background: #0d9488;
+    color: white;
+    box-shadow: 0 3px 6px rgba(13, 148, 136, 0.15);
+}
+
+.activeToggle:hover {
+    background: #0d9488;
+    color: white;
+}
+
+/* Containers */
 .scrollContainer {
-    height: 100%;
+    flex: 1;
     overflow: hidden;
     position: relative;
+    height: 100%;
 }
 
-.achievementGrid {
+.gridContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+}
+
+.gridContainer::-webkit-scrollbar {
+    display: none;
+}
+
+/* Horizontal Scrolling Layout (Vertical Animation loop) */
+.achievementScrollGrid {
     display: flex;
     flex-direction: column;
     gap: 16px;
     animation: scrollVertical 20s linear infinite;
 }
 
-.achievementGrid:hover {
+.achievementScrollGrid:hover {
     animation-play-state: paused;
+}
+
+.achievementStaticList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 @keyframes scrollVertical {
@@ -108,24 +258,64 @@
     100% { transform: translateY(-50%); }
 }
 
-.achievementCard {
-    background: white;
-    border-radius: 24px;
-    overflow: hidden;
-    display: flex;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(241, 245, 249, 0.8);
-    min-height: 120px;
+/* Grid Layout (2 Columns) */
+.achievementGrid2Col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    animation: fadeInUp 0.4s ease-out forwards;
 }
 
-.imageSection {
+/* Card - Horizontal layout */
+.achievementCardHorizontal {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f1f5f9;
+    min-height: 120px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.achievementCardHorizontal:hover {
+    border-color: #ccfbf1;
+}
+
+.imageSectionHorizontal {
     width: 100px;
     height: 120px;
     position: relative;
     flex-shrink: 0;
-    background: #f1f5f9;
+    background: #f8fafc;
 }
 
+/* Card - Vertical layout (Grid) */
+.achievementCardVertical {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.achievementCardVertical:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(13, 148, 136, 0.06);
+    border-color: #ccfbf1;
+}
+
+.imageSectionVertical {
+    width: 100%;
+    height: 110px;
+    position: relative;
+    background: #f8fafc;
+}
+
+/* Image styling */
 .achievementImage {
     width: 100%;
     height: 100%;
@@ -139,20 +329,22 @@
     align-items: center;
     justify-content: center;
     color: #cbd5e1;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
-/* Badges */
+/* Badges for levels */
 .badgeNasional, .badgeProvinsi, .badgeKabupaten, .badgeKecamatan {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 2px 4px;
-    font-size: 9px;
-    font-weight: 800;
+    padding: 3px 4px;
+    font-size: 8px;
+    font-weight: 850;
     text-transform: uppercase;
     text-align: center;
     color: white;
+    letter-spacing: 0.5px;
 }
 
 .badgeNasional { background: #f59e0b; }
@@ -160,20 +352,27 @@
 .badgeKabupaten { background: #3b82f6; }
 .badgeKecamatan { background: #0d9488; }
 
+/* Info Section */
 .infoSection {
     flex: 1;
-    padding: 16px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-width: 0;
 }
 
 .achievementTitle {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     color: #1e293b;
-    margin-bottom: 8px;
-    line-height: 1.3;
+    margin: 0 0 8px 0;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .metaInfo {
@@ -186,23 +385,63 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: 11px;
     color: #64748b;
     font-weight: 600;
 }
 
+.metaText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Loading state skeleton wrapper */
+.skeletonList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Empty State Design */
 .emptyState {
     text-align: center;
     padding: 60px 20px;
+    background: white;
+    border-radius: 20px;
+    border: 1px dashed #cbd5e1;
+    box-sizing: border-box;
 }
 
 .emptyIcon {
-    font-size: 64px;
-    color: #e2e8f0;
-    margin-bottom: 16px;
+    font-size: 52px;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+}
+
+.emptyState h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 6px 0;
+}
+
+.emptyState p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
 }
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

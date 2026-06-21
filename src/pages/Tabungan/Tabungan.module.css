@@ -11,8 +11,9 @@
     position: relative;
     background: linear-gradient(135deg, #042f2e 0%, #064e3b 100%);
     overflow: hidden;
-    padding-bottom: 24px;
-    margin-bottom: -20px;
+    padding-bottom: 56px; /* increased to make room for overlapping card */
+    margin-bottom: 0px; /* reset margin so card negative margin floats on it */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .bgOverlay {
@@ -153,7 +154,7 @@
 }
 
 .content {
-    padding: 20px;
+    padding: 0 20px 20px 20px; /* remove top padding so card negative margin floats properly */
     position: relative;
     z-index: 2;
 }
@@ -177,19 +178,21 @@
 }
 
 .balanceCard {
-    background: linear-gradient(to right, #ffffff, #f0fdfa);
-    padding: 24px;
-    border-radius: 16px;
+    background-color: #115e59; /* Samakan dengan card siswa di dashboard */
+    padding: 20px 24px;
+    border-radius: 16px; /* jangan terlalu rounded (match dashboard) */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: -38px; /* overlap: setengah di bg hijau, setengah di bg putih */
     margin-bottom: 30px;
-    border: 1px solid rgba(13, 148, 136, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 
-        0 10px 15px -3px rgba(0, 0, 0, 0.05),
-        0 4px 6px -2px rgba(0, 0, 0, 0.02);
+        0 10px 25px -5px rgba(0, 0, 0, 0.08),
+        0 10px 30px -10px rgba(17, 94, 89, 0.25);
     position: relative;
     overflow: hidden;
+    z-index: 3;
 }
 
 .balanceCard::after {
@@ -197,16 +200,16 @@
     position: absolute;
     right: -20px;
     bottom: -20px;
-    width: 100px;
-    height: 100px;
-    background: radial-gradient(circle, rgba(13, 148, 136, 0.05) 0%, transparent 70%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
     border-radius: 50%;
 }
 
 .balanceLabel {
     font-size: 13px;
     font-weight: 700;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.7);
     display: block;
     margin-bottom: 4px;
     text-transform: uppercase;
@@ -214,48 +217,58 @@
 }
 
 .balanceValue {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 900;
-    color: #064e3b;
+    color: #ffffff;
     letter-spacing: -1px;
     display: block;
 }
 
 .balanceIconWrapper {
-    width: 60px;
-    height: 60px;
-    background: white;
-    color: #0d9488;
-    border-radius: 18px;
+    width: 54px;
+    height: 54px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
-    border: 1px solid #ccfbf1;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     position: relative;
     z-index: 1;
+    backdrop-filter: blur(8px);
 }
 
-/* Savings List (Credit Cards) */
-.savingsList {
+/* Savings List (ATM Cards Swiper) */
+.swiperContainer {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 10px 0 20px 0;
+    overflow: hidden;
+}
+
+.swiperSlide {
+    width: 290px !important;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    height: auto;
 }
 
 .savingsCard {
     position: relative;
     background: linear-gradient(135deg, #042f2e 0%, #064e3b 100%);
     padding: 24px;
-    border-radius: 24px;
+    border-radius: 16px;
     color: white;
     aspect-ratio: 1.6 / 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 20px 30px -10px rgba(6, 78, 59, 0.3);
+    box-shadow: 0 15px 25px -8px rgba(6, 78, 59, 0.25);
     overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    width: 100%;
+    cursor: pointer;
 }
 
 .savingsCard::before {
@@ -270,7 +283,8 @@
 }
 
 .savingsCard:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 20px 30px -5px rgba(6, 78, 59, 0.35);
 }
 
 .cardHeader {
@@ -396,26 +410,276 @@
     text-transform: lowercase;
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.balanceCard, .savingsCard {
+.balanceCard, .swiperSlide {
     animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.savingsCard:nth-child(2) {
+.swiperSlide:nth-child(2) {
     animation-delay: 0.1s;
 }
 
-.savingsCard:nth-child(3) {
+.swiperSlide:nth-child(3) {
     animation-delay: 0.2s;
+}
+
+/* Empty State Design */
+.emptyState {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 24px;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.emptyIconWrapper {
+    width: 76px;
+    height: 76px;
+    background: #f0fdfa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d9488;
+    box-shadow: 0 8px 16px rgba(13, 148, 136, 0.08);
+    margin-bottom: 8px;
+    animation: pulseIcon 2.5s infinite ease-in-out;
+}
+
+.emptyTitle {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.emptyText {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+    max-width: 280px;
+    margin: 0;
+}
+
+@keyframes pulseIcon {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 8px 16px rgba(13, 148, 136, 0.08);
+    }
+    50% {
+        transform: scale(1.06);
+        box-shadow: 0 12px 24px rgba(13, 148, 136, 0.16);
+    }
+}
+
+/* Student Not Found Empty State */
+.errorContainer {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.errorCard {
+    background: white;
+    width: 100%;
+    max-width: 380px;
+    border-radius: 28px;
+    padding: 40px 24px;
+    text-align: center;
+    box-shadow: 
+        0 15px 30px -10px rgba(148, 163, 184, 0.12),
+        0 4px 6px -2px rgba(148, 163, 184, 0.05);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.errorIconWrapper {
+    width: 84px;
+    height: 84px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 16px rgba(100, 116, 139, 0.04);
+    margin-bottom: 8px;
+    animation: pulseErrorIcon 2.5s infinite ease-in-out;
+}
+
+.errorTitle {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+    letter-spacing: -0.4px;
+}
+
+.errorText {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.6;
+    max-width: 290px;
+    margin: 0 0 8px 0;
+}
+
+.errorButton {
+    background: #0d9488;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    box-shadow: 0 8px 20px -6px rgba(13, 148, 136, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.errorButton:hover {
+    background: #0f766e;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -6px rgba(13, 148, 136, 0.5);
+}
+
+.errorButton:active {
+    transform: scale(0.96) translateY(0);
+}
+
+@keyframes pulseErrorIcon {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 8px 16px rgba(100, 116, 139, 0.04);
+    }
+    50% {
+        transform: scale(1.04);
+        box-shadow: 0 12px 24px rgba(100, 116, 139, 0.12);
+        border-color: #cbd5e1;
+    }
+}
+
+.historySection {
+    margin-top: 32px;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.historyTitle {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.historyTitle::before {
+    content: "";
+    width: 4px;
+    height: 18px;
+    background: #0d9488;
+    border-radius: 4px;
+}
+
+.historyList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.historyItem {
+    background: white;
+    border-radius: 16px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.historyItem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border-color: #e2e8f0;
+}
+
+.txIconWrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.txIconSymbol {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.txDetails {
+    flex: 1;
+    margin-left: 14px;
+    min-width: 0;
+}
+
+.txType {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.txMeta {
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.txAmount {
+    font-size: 15px;
+    font-weight: 800;
+    margin-left: 14px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.emptyHistory {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px dashed #cbd5e1;
 }

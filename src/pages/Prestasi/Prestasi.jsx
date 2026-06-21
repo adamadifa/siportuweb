@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiOutlineTrophy, HiOutlineUser, HiOutlineAcademicCap, HiOutlineTrophy as HiTrophyIcon } from 'react-icons/hi2';
+import { HiArrowLeft, HiOutlineTrophy, HiOutlineUser, HiOutlineAcademicCap, HiSquares2X2, HiListBullet } from 'react-icons/hi2';
 import styles from './Prestasi.module.css';
 import { StudentRepository, GeneralRepository } from '../../repositories';
 import logo from '../../assets/images/logo.png';
@@ -11,18 +11,28 @@ const Prestasi = () => {
     const [achievements, setAchievements] = useState([]);
     const [loading, setLoading] = useState(true);
     const [settings, setSettings] = useState(null);
+    
+    // UI states
+    const [activeFilter, setActiveFilter] = useState('Semua');
+    const [viewMode, setViewMode] = useState('scroll'); // 'scroll' or 'grid'
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
                 const [achRes, settingsRes] = await Promise.all([
-                    StudentRepository.getPrestasiSiswa({ limit: 50 }),
-                    GeneralRepository.getSettings()
+                    StudentRepository.getPrestasiSiswa({ limit: 50 }).catch(err => {
+                        console.error('Error fetching achievements:', err);
+                        return null;
+                    }),
+                    GeneralRepository.getSettings().catch(err => {
+                        console.error('Error fetching settings:', err);
+                        return null;
+                    })
                 ]);
 
                 if (achRes && achRes.success) {
-                    setAchievements(achRes.data);
+                    setAchievements(achRes.data || []);
                 }
                 if (settingsRes?.status === 'success') {
                     setSettings(settingsRes.data);
@@ -44,6 +54,15 @@ const Prestasi = () => {
         return styles.badgeKecamatan;
     };
 
+    // Filters list
+    const filters = ['Semua', 'Nasional', 'Provinsi', 'Kabupaten', 'Kecamatan'];
+
+    // Filter achievements
+    const filteredAchievements = achievements.filter(item => {
+        if (activeFilter === 'Semua') return true;
+        return item.tingkat?.toLowerCase() === activeFilter.toLowerCase();
+    });
+
     return (
         <div className={styles.container}>
             {/* Unified Header */}
@@ -56,6 +75,9 @@ const Prestasi = () => {
                 )}
                 
                 <div className={styles.header}>
+                    <button className={styles.backButton} onClick={() => navigate('/dashboard')} title="Kembali">
+                        <HiArrowLeft />
+                    </button>
                     <div className={styles.brandWrapper}>
                         <img src={logo} alt="Logo" className={styles.logo} />
                         <span className={styles.brandName}>SIPORTU</span>
@@ -69,58 +91,97 @@ const Prestasi = () => {
             </div>
 
             <div className={styles.content}>
-                {loading ? (
-                    <div className={styles.achievementGrid}>
-                        {[1, 2, 3, 4].map((i) => (
-                            <Skeleton key={i} height="140px" borderRadius="24px" />
+                {/* Controls: Category scroll and view toggles */}
+                <div className={styles.controlsRow}>
+                    <div className={styles.filterScroll}>
+                        {filters.map((filter) => (
+                            <button
+                                key={filter}
+                                className={`${styles.filterTab} ${activeFilter === filter ? styles.activeTab : ''}`}
+                                onClick={() => setActiveFilter(filter)}
+                            >
+                                {filter}
+                            </button>
                         ))}
                     </div>
-                ) : (
-                    <div className={styles.scrollContainer}>
-                        <div className={styles.achievementGrid}>
-                            {/* Double the items for seamless loop */}
-                            {[...achievements, ...achievements].map((item, index) => (
-                                <div key={item.id ? `${item.id}-${index}` : index} className={styles.achievementCard}>
-                                    <div className={styles.imageSection}>
-                                        {item.foto_url ? (
-                                            <img src={item.foto_url} alt={item.prestasi} className={styles.achievementImage} />
-                                        ) : (
-                                            <div className={styles.imagePlaceholder}>
-                                                <HiTrophyIcon size={40} />
-                                            </div>
-                                        )}
-                                        <div className={getTingkatBadgeClass(item.tingkat)}>
-                                            {item.tingkat}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className={styles.infoSection}>
-                                        <h3 className={styles.achievementTitle}>{item.prestasi}</h3>
-                                        
-                                        <div className={styles.metaInfo}>
-                                            <div className={styles.metaItem}>
-                                                <HiOutlineUser />
-                                                <span>{item.nama_siswa}</span>
-                                            </div>
-                                            <div className={styles.metaItem}>
-                                                <HiOutlineAcademicCap />
-                                                <span>{item.unit?.nama_unit}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                    
+                    <div className={styles.toggleWrapper}>
+                        <button 
+                            className={`${styles.toggleBtn} ${viewMode === 'scroll' ? styles.activeToggle : ''}`}
+                            onClick={() => setViewMode('scroll')}
+                            title="Tampilan Alur Gulir"
+                        >
+                            <HiListBullet />
+                        </button>
+                        <button 
+                            className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.activeToggle : ''}`}
+                            onClick={() => setViewMode('grid')}
+                            title="Tampilan Grid 2 Kolom"
+                        >
+                            <HiSquares2X2 />
+                        </button>
+                    </div>
+                </div>
 
-                            {achievements.length === 0 && (
-                                <div className={styles.emptyState}>
-                                    <div className={styles.emptyIcon}>
-                                        <HiTrophyIcon />
+                {loading ? (
+                    <div className={styles.skeletonList}>
+                        <Skeleton height="120px" borderRadius="16px" count={3} style={{ marginBottom: '12px' }} />
+                    </div>
+                ) : (
+                    <div className={viewMode === 'scroll' ? styles.scrollContainer : styles.gridContainer}>
+                        {filteredAchievements.length > 0 ? (
+                            <div 
+                                className={viewMode === 'scroll' ? (filteredAchievements.length >= 3 ? styles.achievementScrollGrid : styles.achievementStaticList) : styles.achievementGrid2Col}
+                                style={viewMode === 'scroll' && filteredAchievements.length >= 3 ? { animationDuration: `${Math.max(filteredAchievements.length * 5, 12)}s` } : {}}
+                            >
+                                {/* Double achievements only for scroll animation */}
+                                {(viewMode === 'scroll' && filteredAchievements.length >= 3
+                                    ? [...filteredAchievements, ...filteredAchievements]
+                                    : filteredAchievements
+                                ).map((item, index) => (
+                                    <div 
+                                        key={item.id ? `${item.id}-${index}` : index} 
+                                        className={viewMode === 'scroll' ? styles.achievementCardHorizontal : styles.achievementCardVertical}
+                                    >
+                                        <div className={viewMode === 'scroll' ? styles.imageSectionHorizontal : styles.imageSectionVertical}>
+                                            {item.foto_url ? (
+                                                <img src={item.foto_url} alt={item.prestasi} className={styles.achievementImage} />
+                                            ) : (
+                                                <div className={styles.imagePlaceholder}>
+                                                    <HiOutlineTrophy size={viewMode === 'scroll' ? 32 : 40} />
+                                                </div>
+                                            )}
+                                            <div className={getTingkatBadgeClass(item.tingkat)}>
+                                                {item.tingkat}
+                                            </div>
+                                        </div>
+                                        
+                                        <div className={styles.infoSection}>
+                                            <h3 className={styles.achievementTitle}>{item.prestasi}</h3>
+                                            
+                                            <div className={styles.metaInfo}>
+                                                <div className={styles.metaItem}>
+                                                    <HiOutlineUser />
+                                                    <span className={styles.metaText}>{item.nama_siswa}</span>
+                                                </div>
+                                                <div className={styles.metaItem}>
+                                                    <HiOutlineAcademicCap />
+                                                    <span className={styles.metaText}>{item.unit?.nama_unit || 'Al Amin'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <h3>Belum ada data prestasi</h3>
-                                    <p>Terus berjuang dan ukir prestasi terbaikmu!</p>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className={styles.emptyState}>
+                                <div className={styles.emptyIcon}>
+                                    <HiOutlineTrophy />
                                 </div>
-                            )}
-                        </div>
+                                <h3>Belum ada data prestasi</h3>
+                                <p>Silakan pilih tingkat prestasi lain atau periksa kembali nanti.</p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -129,4 +190,3 @@ const Prestasi = () => {
 };
 
 export default Prestasi;
-

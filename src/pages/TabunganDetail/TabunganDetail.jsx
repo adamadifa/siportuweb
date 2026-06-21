@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './TabunganDetail.module.css';
-import { MdArrowBack, MdAccountBalanceWallet, MdInput, MdOutput, MdHistory } from 'react-icons/md';
+import { MdArrowBack, MdAccountBalanceWallet, MdArrowDownward, MdArrowUpward, MdHistory, MdWifi } from 'react-icons/md';
 import { StudentRepository, GeneralRepository } from '../../repositories';
 import Skeleton from '../../components/ui/Skeleton/Skeleton';
 
@@ -17,8 +17,14 @@ const TabunganDetail = () => {
             try {
                 setLoading(true);
                 const [detailRes, settingsRes] = await Promise.all([
-                    StudentRepository.getDetailTabunganSantri(studentId, accountNo),
-                    GeneralRepository.getSettings()
+                    StudentRepository.getDetailTabunganSantri(studentId, accountNo).catch(err => {
+                        console.error('Error fetching detail:', err);
+                        return null;
+                    }),
+                    GeneralRepository.getSettings().catch(err => {
+                        console.error('Error fetching settings:', err);
+                        return null;
+                    })
                 ]);
                 
                 if (detailRes && detailRes.success) {
@@ -50,22 +56,21 @@ const TabunganDetail = () => {
         return new Date(dateString).toLocaleDateString('id-ID', options);
     };
 
-    const formatTime = (dateString) => {
-        const options = { hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleTimeString('id-ID', options);
-    };
-
     if (loading) {
         return (
             <div className={styles.container}>
-                <div className={styles.headerPlaceholder}>
-                    <Skeleton width="100%" height="200px" borderRadius="0 0 30px 30px" />
+                <div className={styles.headerWrapper} style={{ paddingBottom: '70px' }}>
+                    <div className={styles.topBar}>
+                        <button className={styles.backButton} style={{ opacity: 0.5 }}><MdArrowBack /></button>
+                        <h1 className={styles.pageTitle}>Memuat Detail...</h1>
+                    </div>
+                    <div className={styles.headerContent}>
+                        <Skeleton width="100%" height="200px" borderRadius="20px" />
+                    </div>
                 </div>
                 <div className={styles.content}>
-                    <Skeleton width="100%" height="120px" borderRadius="24px" style={{ marginBottom: '24px' }} />
-                    <Skeleton width="100%" height="80px" borderRadius="20px" style={{ marginBottom: '16px' }} />
-                    <Skeleton width="100%" height="80px" borderRadius="20px" style={{ marginBottom: '16px' }} />
-                    <Skeleton width="100%" height="80px" borderRadius="20px" />
+                    <Skeleton width="160px" height="20px" style={{ marginBottom: '16px', marginTop: '16px' }} />
+                    <Skeleton width="100%" height="76px" borderRadius="16px" count={3} style={{ marginBottom: '12px' }} />
                 </div>
             </div>
         );
@@ -103,34 +108,49 @@ const TabunganDetail = () => {
                     <button className={styles.backButton} onClick={() => navigate(-1)}>
                         <MdArrowBack />
                     </button>
-                    <h1 className={styles.pageTitle}>{detailData.jenis_tabungan}</h1>
+                    <h1 className={styles.pageTitle}>Detail Rekening</h1>
                 </div>
 
                 <div className={styles.headerContent}>
-                    <div className={styles.accountInfo}>
-                        <h2 className={styles.accountName}>{detailData.nama_anggota}</h2>
-                        <div className={styles.accountNumberBadge}>{detailData.no_rekening}</div>
+                    {/* Modern ATM/Savings Card */}
+                    <div className={styles.creditCard}>
+                        <div className={styles.cardHeader}>
+                            <span className={styles.cardBrand}>SIPORTU CARD</span>
+                            <div className={styles.chipWrapper}>
+                                <div className={styles.cardChip}></div>
+                                <MdWifi className={styles.wifiIcon} size={22} />
+                            </div>
+                        </div>
+
+                        <div className={styles.cardBody}>
+                            <span className={styles.balanceLabel}>SALDO TABUNGAN</span>
+                            <span className={styles.balanceValue}>{formatCurrency(detailData.saldo)}</span>
+                        </div>
+
+                        <div className={styles.cardFooter}>
+                            <div className={styles.cardMetaLeft}>
+                                <span className={styles.metaLabel}>NOMOR REKENING</span>
+                                <span className={styles.accountNumber}>{detailData.no_rekening}</span>
+                            </div>
+                            <div className={styles.cardMetaRight}>
+                                <span className={styles.metaLabel}>JENIS</span>
+                                <span className={styles.accountType}>{detailData.jenis_tabungan}</span>
+                            </div>
+                        </div>
+                        
+                        <div className={styles.cardOwnerName}>
+                            {detailData.nama_anggota}
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
             <div className={styles.content}>
-                {/* Balance Summary */}
-                <div className={styles.summaryCard}>
-                    <div>
-                        <span className={styles.balanceLabel}>Saldo Saat Ini</span>
-                        <span className={styles.balanceValue}>{formatCurrency(detailData.saldo)}</span>
-                    </div>
-                    <div className={styles.iconWrapper}>
-                        <MdAccountBalanceWallet size={28} />
-                    </div>
-                </div>
-
                 {/* Transaction History */}
                 <div className={styles.sectionTitle}>
                     <span>Riwayat Transaksi</span>
-                    <span style={{ fontSize: '12px', fontWeight: '400', color: '#888' }}>
+                    <span className={styles.transactionCount}>
                         {detailData.total_transaksi} Transaksi Terakhir
                     </span>
                 </div>
@@ -140,8 +160,14 @@ const TabunganDetail = () => {
                         detailData.transaksi.map((item, index) => (
                             <div key={index} className={styles.transactionItem}>
                                 <div className={styles.transactionLeft}>
-                                    <div className={`${styles.transactionIcon} ${item.jenis_transaksi === 'S' ? styles.iconIn : styles.iconOut}`}>
-                                        {item.jenis_transaksi === 'S' ? <MdInput /> : <MdOutput />}
+                                    <div 
+                                        className={styles.transactionIcon} 
+                                        style={{ 
+                                            backgroundColor: item.jenis_transaksi === 'S' ? '#ecfdf5' : '#fef2f2', 
+                                            color: item.jenis_transaksi === 'S' ? '#10b981' : '#f43f5e' 
+                                        }}
+                                    >
+                                        {item.jenis_transaksi === 'S' ? <MdArrowDownward /> : <MdArrowUpward />}
                                     </div>
                                     <div className={styles.transactionMeta}>
                                         <span className={styles.transactionType}>
@@ -151,10 +177,15 @@ const TabunganDetail = () => {
                                     </div>
                                 </div>
                                 <div className={styles.transactionRight}>
-                                    <span className={`${styles.transactionAmount} ${item.jenis_transaksi === 'S' ? styles.amountIn : styles.amountOut}`}>
+                                    <span 
+                                        className={styles.transactionAmount} 
+                                        style={{ color: item.jenis_transaksi === 'S' ? '#10b981' : '#f43f5e' }}
+                                    >
                                         {item.jenis_transaksi === 'S' ? '+' : '-'} {formatCurrency(item.jumlah)}
                                     </span>
-                                    <span className={styles.transactionOfficer}>{item.nama_petugas}</span>
+                                    {item.nama_petugas && (
+                                        <span className={styles.transactionOfficer}>Petugas: {item.nama_petugas}</span>
+                                    )}
                                 </div>
                             </div>
                         ))

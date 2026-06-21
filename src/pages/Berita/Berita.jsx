@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiOutlineChevronRight, HiOutlineMapPin, HiOutlineNewspaper } from 'react-icons/hi2';
+import { HiOutlineChevronRight, HiOutlineNewspaper, HiArrowLeft, HiMagnifyingGlass } from 'react-icons/hi2';
 import styles from './Berita.module.css';
 import { StudentRepository, GeneralRepository } from '../../repositories';
 import logo from '../../assets/images/logo.png';
@@ -11,18 +11,28 @@ const Berita = () => {
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [settings, setSettings] = useState(null);
+    
+    // Search & Filter State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('Semua');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
                 const [newsRes, settingsRes] = await Promise.all([
-                    StudentRepository.getPosts(),
-                    GeneralRepository.getSettings()
+                    StudentRepository.getPosts().catch(err => {
+                        console.error('Error fetching news:', err);
+                        return null;
+                    }),
+                    GeneralRepository.getSettings().catch(err => {
+                        console.error('Error fetching settings:', err);
+                        return null;
+                    })
                 ]);
 
                 if (newsRes && newsRes.success) {
-                    setNews(newsRes.data);
+                    setNews(newsRes.data || []);
                 }
                 if (settingsRes?.status === 'success') {
                     setSettings(settingsRes.data);
@@ -37,13 +47,27 @@ const Berita = () => {
     }, []);
 
     const formatDate = (dateString) => {
-        if (!dateString) return { day: '-', month: '-' };
-        const date = new Date(dateString);
-        return {
-            day: date.getDate(),
-            month: date.toLocaleDateString('id-ID', { month: 'short' })
-        };
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
     };
+
+    // Extract unique categories dynamically
+    const categories = ['Semua', ...new Set(news.map(item => item.category_name || 'Berita'))];
+
+    // Filtered news list based on category and search query
+    const filteredNews = news.filter(item => {
+        const matchesCategory = selectedCategory === 'Semua' || (item.category_name || 'Berita') === selectedCategory;
+        const matchesSearch = item.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                             item.content?.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
+
+    const featuredItem = filteredNews[0];
+    const otherNews = filteredNews.slice(1);
 
     return (
         <div className={styles.container}>
@@ -57,6 +81,9 @@ const Berita = () => {
                 )}
                 
                 <div className={styles.header}>
+                    <button className={styles.backButton} onClick={() => navigate('/dashboard')} title="Kembali">
+                        <HiArrowLeft />
+                    </button>
                     <div className={styles.brandWrapper}>
                         <img src={logo} alt="Logo" className={styles.logo} />
                         <span className={styles.brandName}>SIPORTU</span>
@@ -64,83 +91,147 @@ const Berita = () => {
                 </div>
 
                 <div className={styles.pageTitleWrapper}>
-                    <h1 className={styles.pageTitle}>Berita Terbaru</h1>
-                    <p className={styles.pageSubtitle}>Update informasi harian untuk Anda</p>
+                    <h1 className={styles.pageTitle}>Berita & Informasi</h1>
+                    <p className={styles.pageSubtitle}>Update terkini kegiatan sekolah dan santri</p>
                 </div>
             </div>
 
             <div className={styles.content}>
-                {loading ? (
-                    <div className={styles.newsGrid}>
-                        {[1, 2, 3, 4].map((i) => (
-                            <Skeleton key={i} height="120px" borderRadius="24px" />
+                {/* Search Bar */}
+                <div className={styles.searchBarWrapper}>
+                    <HiMagnifyingGlass className={styles.searchIcon} />
+                    <input 
+                        type="text" 
+                        placeholder="Cari berita..." 
+                        className={styles.searchInput}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+
+                {/* Category Filters */}
+                {news.length > 0 && (
+                    <div className={styles.categoryScroll}>
+                        {categories.map((cat, idx) => (
+                            <button
+                                key={idx}
+                                className={`${styles.categoryTab} ${selectedCategory === cat ? styles.activeTab : ''}`}
+                                onClick={() => setSelectedCategory(cat)}
+                            >
+                                {cat}
+                            </button>
                         ))}
                     </div>
+                )}
+
+                {loading ? (
+                    <div className={styles.skeletonWrapper}>
+                        <Skeleton height="260px" borderRadius="24px" style={{ marginBottom: '20px' }} />
+                        <Skeleton height="100px" borderRadius="20px" count={3} style={{ marginBottom: '12px' }} />
+                    </div>
                 ) : (
-                    <div className={styles.newsGrid}>
-                        {news.map((item, index) => {
-                            const date = new Date(item.created_at).toLocaleDateString('id-ID', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
-                            });
-                            
-                            return (
-                                <div
-                                    key={item.id || index}
-                                    className={styles.newsCard}
-                                    onClick={() => navigate(`/berita-detail/${item.slug}`)}
-                                >
-                                    <div className={styles.imageWrapper}>
-                                        {item.image && !item.imageError ? (
-                                            <img 
-                                                src={item.image} 
-                                                alt={item.title} 
-                                                className={styles.newsImage} 
-                                                onError={(e) => {
-                                                    const newNews = [...news];
-                                                    newNews[index].imageError = true;
-                                                    setNews(newNews);
-                                                }}
-                                            />
-                                        ) : (
-                                            <div className={styles.imagePlaceholder}>
-                                                <HiOutlineNewspaper size={48} />
-                                            </div>
-                                        )}
-                                        <span className={styles.categoryBadge}>{item.category_name || 'Berita'}</span>
-                                    </div>
-                                    
-                                    <div className={styles.newsContent}>
-                                        <div className={styles.newsMeta}>
-                                            <span>{date}</span>
-                                            <span className={styles.dot}>•</span>
-                                            <span>Oleh Admin</span>
+                    <div className={styles.newsContainer}>
+                        {filteredNews.length > 0 ? (
+                            <>
+                                {/* Featured News (Big Card) */}
+                                {featuredItem && (
+                                    <div 
+                                        className={styles.featuredCard}
+                                        onClick={() => navigate(`/berita-detail/${featuredItem.slug}`)}
+                                    >
+                                        <div className={styles.featuredImageWrapper}>
+                                            {featuredItem.image && !featuredItem.imageError ? (
+                                                <img 
+                                                    src={featuredItem.image} 
+                                                    alt={featuredItem.title} 
+                                                    className={styles.featuredImage}
+                                                    onError={() => {
+                                                        const newNews = [...news];
+                                                        const idx = news.findIndex(n => n.id === featuredItem.id);
+                                                        if (idx !== -1) {
+                                                            newNews[idx].imageError = true;
+                                                            setNews(newNews);
+                                                        }
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className={styles.featuredImagePlaceholder}>
+                                                    <HiOutlineNewspaper size={64} />
+                                                </div>
+                                            )}
+                                            <span className={styles.featuredBadge}>FEATURED</span>
+                                            <span className={styles.featuredCategoryBadge}>
+                                                {featuredItem.category_name || 'Berita'}
+                                            </span>
                                         </div>
-                                        
-                                        <h3 className={styles.newsTitle}>{item.title}</h3>
-                                        <p className={styles.newsSnippet}>
-                                            {item.content && item.content.replace(/<[^>]*>/g, '').substring(0, 120)}...
-                                        </p>
-                                        
-                                        <div className={styles.cardFooter}>
-                                            <div className={styles.readMore}>
-                                                <span>Baca Selengkapnya</span>
-                                                <HiOutlineChevronRight />
+                                        <div className={styles.featuredContent}>
+                                            <div className={styles.newsMeta}>
+                                                <span>{formatDate(featuredItem.created_at)}</span>
+                                                <span className={styles.dot}>•</span>
+                                                <span>Admin</span>
                                             </div>
+                                            <h2 className={styles.featuredTitle}>{featuredItem.title}</h2>
+                                            <p className={styles.featuredSnippet}>
+                                                {featuredItem.content && featuredItem.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                        
-                        {news.length === 0 && (
+                                )}
+
+                                {/* Other News Grid (2 Columns) */}
+                                {otherNews.length > 0 && (
+                                    <div className={styles.otherNewsSection}>
+                                        <h3 className={styles.sectionTitle}>Berita Lainnya</h3>
+                                        <div className={styles.newsGrid2Col}>
+                                            {otherNews.map((item, index) => (
+                                                <div 
+                                                    key={item.id || index}
+                                                    className={styles.gridCard}
+                                                    onClick={() => navigate(`/berita-detail/${item.slug}`)}
+                                                >
+                                                    <div className={styles.gridImageWrapper}>
+                                                        {item.image && !item.imageError ? (
+                                                            <img 
+                                                                src={item.image} 
+                                                                alt={item.title} 
+                                                                className={styles.gridImage}
+                                                                onError={() => {
+                                                                    const newNews = [...news];
+                                                                    const idx = news.findIndex(n => n.id === item.id);
+                                                                    if (idx !== -1) {
+                                                                        newNews[idx].imageError = true;
+                                                                        setNews(newNews);
+                                                                    }
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <div className={styles.gridImagePlaceholder}>
+                                                                <HiOutlineNewspaper size={36} />
+                                                            </div>
+                                                        )}
+                                                        <span className={styles.gridCategoryBadge}>
+                                                            {item.category_name || 'Berita'}
+                                                        </span>
+                                                    </div>
+                                                    <div className={styles.gridContent}>
+                                                        <span className={styles.gridDate}>
+                                                            {formatDate(item.created_at)}
+                                                        </span>
+                                                        <h4 className={styles.gridTitle}>{item.title}</h4>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
                             <div className={styles.emptyState}>
                                 <div className={styles.emptyIcon}>
                                     <HiOutlineNewspaper />
                                 </div>
-                                <h3>Belum ada berita</h3>
-                                <p>Silakan periksa kembali nanti untuk informasi terbaru.</p>
+                                <h3>Tidak ada hasil ditemukan</h3>
+                                <p>Coba gunakan kata kunci pencarian lain atau pilih kategori yang berbeda.</p>
                             </div>
                         )}
                     </div>

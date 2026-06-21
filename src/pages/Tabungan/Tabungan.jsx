@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './Tabungan.module.css';
-import { MdPlace, MdArrowBack, MdPhone, MdWifi, MdAccountBalanceWallet } from 'react-icons/md';
+import { MdPlace, MdArrowBack, MdPhone, MdWifi, MdAccountBalanceWallet, MdPersonOutline, MdChevronRight } from 'react-icons/md';
 import { StudentRepository, GeneralRepository } from '../../repositories';
 import Skeleton from '../../components/ui/Skeleton/Skeleton';
+
+// Swiper Slider Components
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 const Tabungan = () => {
     const navigate = useNavigate();
@@ -11,6 +15,7 @@ const Tabungan = () => {
     const [student, setStudent] = useState(null);
     const [savingsList, setSavingsList] = useState([]);
     const [totalSaldo, setTotalSaldo] = useState(0);
+    const [recentTransactions, setRecentTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [settings, setSettings] = useState(null);
 
@@ -21,14 +26,24 @@ const Tabungan = () => {
             try {
                 setLoading(true);
                 const [savingsRes, studentRes, settingsRes] = await Promise.all([
-                    StudentRepository.getTabunganSantri(studentId),
-                    StudentRepository.getSiswaById(studentId),
-                    GeneralRepository.getSettings()
+                    StudentRepository.getTabunganSantri(studentId).catch(err => {
+                        console.error('Error fetching savings list:', err);
+                        return null;
+                    }),
+                    StudentRepository.getSiswaById(studentId).catch(err => {
+                        console.error('Error fetching student details:', err);
+                        return null;
+                    }),
+                    GeneralRepository.getSettings().catch(err => {
+                        console.error('Error fetching settings:', err);
+                        return null;
+                    })
                 ]);
 
                 if (savingsRes && savingsRes.success) {
                     setTotalSaldo(savingsRes.data.total_saldo);
                     setSavingsList(savingsRes.data.tabungan);
+                    setRecentTransactions(savingsRes.data.transaksi_terakhir || []);
                 }
 
                 if (Array.isArray(studentRes) && studentRes.length > 0) {
@@ -79,11 +94,20 @@ const Tabungan = () => {
 
     if (!displayStudent) {
         return (
-            <div className={styles.container} style={{ padding: '20px', textAlign: 'center' }}>
-                <p>Data siswa tidak ditemukan.</p>
-                <button onClick={() => navigate(-1)} className={styles.backButton} style={{ color: '#333', background: '#e0e0e0', width: 'auto', padding: '10px 20px', margin: '10px auto' }}>
-                    Kembali
-                </button>
+            <div className={styles.errorContainer}>
+                <div className={styles.errorCard}>
+                    <div className={styles.errorIconWrapper}>
+                        <MdPersonOutline size={48} />
+                    </div>
+                    <h2 className={styles.errorTitle}>Siswa Tidak Ditemukan</h2>
+                    <p className={styles.errorText}>
+                        Maaf, data profil siswa tidak berhasil dimuat atau tidak terdaftar di sistem tabungan saat ini.
+                    </p>
+                    <button onClick={() => navigate(-1)} className={styles.errorButton}>
+                        <MdArrowBack size={18} />
+                        <span>Kembali</span>
+                    </button>
+                </div>
             </div>
         );
     }
@@ -143,45 +167,97 @@ const Tabungan = () => {
                     </div>
                 </div>
 
-                <div className={styles.savingsList}>
-                    {savingsList.length > 0 ? (
-                        savingsList.map((item, index) => (
-                            <div
-                                key={index}
-                                className={styles.savingsCard}
-                                onClick={() => navigate(`/tabungan/${studentId}/${item.no_rekening}`)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <div className={styles.cardHeader}>
-                                    <div className={styles.chipIcon}></div>
-                                    <MdWifi className={styles.wifiIcon} size={24} />
-                                </div>
+                {savingsList.length > 0 ? (
+                    <div className={styles.swiperContainer}>
+                        <Swiper
+                            spaceBetween={16}
+                            slidesPerView={'auto'}
+                            centeredSlides={false}
+                            grabCursor={true}
+                            slidesOffsetBefore={20}
+                            slidesOffsetAfter={20}
+                            className={styles.mySwiper}
+                        >
+                            {savingsList.map((item, index) => (
+                                <SwiperSlide key={index} className={styles.swiperSlide}>
+                                    <div
+                                        className={styles.savingsCard}
+                                        onClick={() => navigate(`/tabungan/${studentId}/${item.no_rekening}`)}
+                                    >
+                                        <div className={styles.cardHeader}>
+                                            <div className={styles.chipIcon}></div>
+                                            <MdWifi className={styles.wifiIcon} size={24} />
+                                        </div>
 
-                                <div className={styles.cardBody}>
-                                    <span className={styles.cardLabel}>SIPORTU</span>
-                                    <span className={styles.accountNumber}>{item.no_rekening}</span><br></br>
-                                    <span className={styles.accountName}>{item.jenis_tabungan?.jenis_tabungan}</span>
-                                </div>
+                                        <div className={styles.cardBody}>
+                                            <span className={styles.cardLabel}>SIPORTU</span>
+                                            <span className={styles.accountNumber}>{item.no_rekening}</span><br></br>
+                                            <span className={styles.accountName}>{item.jenis_tabungan?.jenis_tabungan}</span>
+                                        </div>
 
-                                <div className={styles.cardFooter}>
-                                    <div>
-                                        <span className={styles.cardType}>Tabungan</span>
+                                        <div className={styles.cardFooter}>
+                                            <div>
+                                                <span className={styles.cardType}>Tabungan</span>
+                                            </div>
+                                            <div className={styles.balanceContainer}>
+                                                <span className={styles.balanceTitle}>SALDO</span>
+                                                <span className={styles.cardBalance}>{formatCurrency(item.saldo)}</span>
+                                            </div>
+                                            <div className={styles.mastercardLogo}>
+                                                <div className={`${styles.mcCircle} ${styles.mcRed}`}></div>
+                                                <div className={`${styles.mcCircle} ${styles.mcYellow}`}></div>
+                                                <span className={styles.msText}>mastercard</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className={styles.balanceContainer}>
-                                        <span className={styles.balanceTitle}>SALDO</span>
-                                        <span className={styles.cardBalance}>{formatCurrency(item.saldo)}</span>
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+                    </div>
+                ) : (
+                    <div className={styles.emptyState}>
+                        <div className={styles.emptyIconWrapper}>
+                            <MdAccountBalanceWallet size={36} />
+                        </div>
+                        <h3 className={styles.emptyTitle}>Belum Ada Tabungan</h3>
+                        <p className={styles.emptyText}>
+                            Siswa ini belum terdaftar di program tabungan atau belum membuka rekening tabungan.
+                        </p>
+                    </div>
+                )}
+
+                {/* Histori Transaksi Terakhir */}
+                <div className={styles.historySection}>
+                    <h3 className={styles.historyTitle}>Histori Transaksi Terakhir</h3>
+                    {recentTransactions.length > 0 ? (
+                        <div className={styles.historyList}>
+                            {recentTransactions.map((tx, idx) => (
+                                <div key={tx.no_transaksi || idx} className={styles.historyItem}>
+                                    <div 
+                                        className={styles.txIconWrapper} 
+                                        style={{ 
+                                            backgroundColor: tx.jenis_transaksi === 'S' ? '#ecfdf5' : '#fef2f2', 
+                                            color: tx.jenis_transaksi === 'S' ? '#10b981' : '#f43f5e' 
+                                        }}
+                                    >
+                                        <span className={styles.txIconSymbol}>{tx.jenis_transaksi === 'S' ? '+' : '-'}</span>
                                     </div>
-                                    <div className={styles.mastercardLogo}>
-                                        <div className={`${styles.mcCircle} ${styles.mcRed}`}></div>
-                                        <div className={`${styles.mcCircle} ${styles.mcYellow}`}></div>
-                                        <span className={styles.msText}>mastercard</span>
+                                    <div className={styles.txDetails}>
+                                        <h4 className={styles.txType}>{tx.jenis_transaksi_text} - {tx.jenis_tabungan}</h4>
+                                        <span className={styles.txMeta}>{tx.no_rekening} • {new Date(tx.created_at || tx.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                    </div>
+                                    <div 
+                                        className={styles.txAmount} 
+                                        style={{ color: tx.jenis_transaksi === 'S' ? '#10b981' : '#f43f5e' }}
+                                    >
+                                        {tx.jenis_transaksi === 'S' ? '+' : '-'}{formatCurrency(tx.jumlah)}
                                     </div>
                                 </div>
-                            </div>
-                        ))
+                            ))}
+                        </div>
                     ) : (
-                        <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-                            Belum ada rekening tabungan.
+                        <div className={styles.emptyHistory}>
+                            Belum ada riwayat transaksi
                         </div>
                     )}
                 </div>

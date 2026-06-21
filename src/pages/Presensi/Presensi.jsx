@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './Presensi.module.css';
-import { MdArrowBack, MdAccessTime, MdCalendarToday, MdSchool, MdPerson, MdInfoOutline } from 'react-icons/md';
+import { MdArrowBack, MdAccessTime, MdCalendarToday, MdSchool, MdPerson, MdInfoOutline, MdPlace, MdPhone } from 'react-icons/md';
 import { StudentRepository, GeneralRepository } from '../../repositories';
 import Skeleton from '../../components/ui/Skeleton/Skeleton';
 
@@ -148,10 +148,16 @@ const Presensi = () => {
                         )}
                     </div>
                     <div className={styles.studentInfo}>
-                        <h2>{student?.nama_lengkap}</h2>
+                        <h2 className={styles.studentName}>{student?.nama_lengkap}</h2>
                         <div className={styles.studentMeta}>
                             <span className={styles.badge}>NIS: {student?.nis}</span>
                             <span className={styles.badge}>{student?.nama_unit}</span>
+                            <span className={styles.badge}>{student?.tahun_ajaran}</span>
+                        </div>
+                        <div className={styles.locationInfo}>
+                            <MdPlace size={14} /> <span>{student?.nama_kota}</span>
+                            <span className={styles.separator}>|</span>
+                            <MdPhone size={14} /> <span>{student?.no_hp_orang_tua || '-'}</span>
                         </div>
                     </div>
                 </div>
